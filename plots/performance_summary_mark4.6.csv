@@ -1,0 +1,11 @@
+# Performance Summary for mark4.6
+
+Metric,Score
+Accuracy,0.7
+ROC AUC,0.78815
+
+# Class-wise Metrics
+
+Class,Precision,Recall,F1-Score
+water_toilet,0.625,1.0,0.7692307692307693
+others,1.0,0.4,0.5714285714285714
