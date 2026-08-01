@@ -126,7 +126,24 @@ class AudioViLDConfig:
         # val(99개) 스윕 결과 0.47~0.49가 accuracy 동률(0.818) -> dog recall이 가장 높은 0.47 채택
         # (감지 용도 기준). val로 고른 0.47의 test(97개) 성능: accuracy 0.866, macro F1 0.866,
         # dog R 0.84, others R 0.90, FPR 0.104 -> 정제 전(0.85/FPR 0.14)보다 개선.
-        self.target_decision_threshold = 0.45
+        # ⚠️ 위 [갱신 2026-07-13~07-15] 이력은 mark4.8(dog_bark) 계보에서 물려받은 것이다.
+        #    이 파일은 mark4.6(water_toilet)용이므로 아래 값만 mark4.6 기준이다.
+        # [갱신 2026-08-01] mark4.6 재학습 후 0.45 -> 0.64 재선정 (water_toilet).
+        # val 430개(water_toilet 215 / others 215) 전 구간 스윕(0.05~0.95, 0.01 간격) 결과
+        # accuracy 최고는 0.9837이고 0.63 / 0.64 / 0.65 세 지점이 동률이었음.
+        # 그중 0.64를 채택한 근거는 구간 안에서의 여유다:
+        #   혼동행렬이 유지되는 구간은 (0.6283, 0.6560], 폭 0.0277.
+        #   0.63은 아래쪽 경계(others 표본 0.6283)에서 0.0017밖에 안 떨어져 있어 분포가 조금만
+        #   움직여도 구간 밖으로 밀린다. 0.64는 구간 한가운데라 양쪽으로 여유가 있다.
+        # 0.64 성능: accuracy 0.9837, macro F1 0.9837, water_toilet P0.991 R0.977,
+        #            others P0.977 R0.991, others FPR 0.009, TP210/FP2/FN5/TN213.
+        # ⚠️ 순수 이득이 아니다. 직전 0.45(acc 0.9744) 대비 오탐은 8->2로 크게 줄지만
+        #    미탐이 3->5로 는다. 미탐을 더 줄이려면 0.60 근처(폭 0.0441로 더 넓고 acc 0.9814,
+        #    오탐 3 / 미탐 5)가 대안이나 accuracy가 표본 1개만큼 낮다.
+        # 재현 검증: 저장된 예측을 thr=0.45로 재계산했을 때 430/430(100%) 일치,
+        #            ROC AUC 자체 계산 0.9984 = 코랩 공식값 0.99844 -> 스윕 결과 신뢰 가능.
+        # 근거 데이터: plots/threshold_sweep_mark4.6_val.csv (model/tune_threshold.py 산출)
+        self.target_decision_threshold = 0.64
         # [삭제 2026-07-11] others_entropy_threshold 하드코딩(0.72) 제거.
         # 원인 규명: 2-class(mark4.x) 이진분류에서 정규화 entropy가 0.72 이하가 되려면
         # top_conf가 최소 약 0.80은 되어야 함(균등분산 최악 케이스 기준 실측 계산).

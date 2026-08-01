@@ -1,0 +1,24 @@
+{
+  "mark_version": "mark4.6",
+  "split": "test",
+  "device": "cpu",
+  "n_clips": 100,
+  "warmup": 10,
+  "imaging_ms": {
+    "mean": 10.648602179999216,
+    "median": 10.466383999755635,
+    "std": 2.0789804905397316
+  },
+  "inference_ms": {
+    "mean": 15.38456060995486,
+    "median": 16.35099149962116,
+    "std": 1.9318292357751319
+  },
+  "total_ms": {
+    "mean": 26.033162789954076,
+    "median": 26.916531999631843,
+    "std": 3.159800691029404
+  },
+  "imaging_share_pct": 38.88459330458616,
+  "realtime_under_1s": true
+}
